@@ -1,0 +1,12 @@
+{
+  "name": "my_robot_imu",
+  "description": "Accelerometer and gyroscope as 16-bit integers, 100 frames per second. Read by the TemplateReader Arduino example.",
+  "header": "AA 55",
+  "rate_hz": 100,
+  "fields": [
+    {"src": "accelerometer", "idx": [0, 1, 2], "type": "i16", "scale": 100},
+    {"src": "gyroscope", "idx": [0, 1, 2], "type": "i16", "scale": 1000},
+    {"type": "seq_u8"}
+  ],
+  "checksum": "xor8"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "gps_position",
+  "description": "GNSS position as degrees x 10^7 (int32) and altitude in mm, 5 per second, as GPS-module protocols often do. Header: GP in ASCII.",
+  "header": "47 50",
+  "rate_hz": 5,
+  "fields": [
+    {"src": "position", "idx": [0, 1], "type": "i32", "scale": 10000000},
+    {"src": "position", "idx": 2, "type": "i32", "scale": 1000},
+    {"src": "position", "idx": 3, "type": "u16", "scale": 100},
+    {"type": "seq_u8"}
+  ],
+  "checksum": "crc16_ccitt"
+}

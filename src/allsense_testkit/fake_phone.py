@@ -356,9 +356,11 @@ class _Client:
             self.send({"op": "status", "topic": topic, "state": "not_shared", "reason": NOT_SHARED})
             return
         rate = self.wanted[topic] if info["reporting"] == "continuous" else 20
+        # "subscribed" before any data: sent after, it could land behind a not_shared from a quick sharing change and
+        # flip the client back to streaming (seen on fast CI machines).
+        self.send({"op": "subscribed", "topic": topic, "rate_hz": rate if info["reporting"] == "continuous" else None})
         flag = self.flags[topic] = threading.Event()
         threading.Thread(target=self.pump, args=(info["name"], topic, rate, flag), daemon=True).start()
-        self.send({"op": "subscribed", "topic": topic, "rate_hz": rate if info["reporting"] == "continuous" else None})
 
     def ping(self, timeout):
         pid = len(self.pongs) + 1

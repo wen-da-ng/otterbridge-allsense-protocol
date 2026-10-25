@@ -36,6 +36,11 @@ def listen(port: int, seconds: float, want_offline: bool, command: str = None):
             return
         if msg.topic.endswith("/cmd"):
             return  # our own command
+        if msg.topic.endswith("/status") and text.startswith("{"):
+            # A stream's status (<prefix>/<category>/<name>/status, JSON): why it isn't sending. The
+            # phone's own status is plain "online"/"offline".
+            print(f"  {msg.topic} = {text}{' (retained)' if msg.retain else ''}")
+            return
         if msg.topic.endswith("/status"):
             status.append(text)
             if text == "online" and command:

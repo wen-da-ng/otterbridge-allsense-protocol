@@ -29,6 +29,7 @@ With the default prefix `allsense/<device>` (change it in the card):
 | Topic | Payload | Retained |
 |---|---|---|
 | `allsense/<device>/<category>/<name>` | one message per sample: `{"t":415062462972699,"time":1792239094.642025,"seq":0,"v":[-0.76,4.08,8.90]}` | no |
+| `allsense/<device>/<category>/<name>/status` | why a stream isn't sending, for people: `{"state":"refused","reason":"Needs precise location: Sensors → Location → Allow"}`, `{"state":"not_shared","reason":"…"}`, or `{"state":"streaming"}` once samples flow | yes |
 | `allsense/<device>/catalog` | the stream list, the same JSON as the protocol's `catalog` (fields, units…) | yes |
 | `allsense/<device>/status` | `online` when connected, `offline` when streaming stops or the phone drops off (last will) | yes |
 | `allsense/<device>/cmd` (you publish) | a command: `{"command":"vibrate","ms":200,"id":1}` ([PROTOCOL.md](PROTOCOL.md#commands), "Commands") | no |
@@ -36,6 +37,7 @@ With the default prefix `allsense/<device>` (change it in the card):
 
 - `t`: the sample's timestamp in ns on the phone's boot clock (as in the protocol); `time`: the same moment in Unix seconds; `seq`: counts up per stream, so gaps mean lost messages; `v`: the values, `null` when missing. The order of `v` is the stream's `fields` in the catalog ([PROTOCOL.md](PROTOCOL.md#streams), "Streams").
 - Category and name are as in the app, e.g. `allsense/phone/sensors/accelerometer`, `allsense/phone/gnss/position`, `allsense/phone/battery/battery`.
+- Subscribing to `allsense/<device>/#` also brings each stream's `…/status`: skip topics ending in `/status` (and `catalog`, `cmd…`) when you only want samples.
 - QoS 0 for samples (newest data matters, not every sample), QoS 1 for status and catalog.
 - Continuous streams publish at the chosen rate; event streams (GNSS, light…) on every event. Sharing (**Home → Connect → Browser → Streams it may send**) applies: a stream that isn't shared over Network isn't published.
 
